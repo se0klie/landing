@@ -27,7 +27,7 @@ CSS STRUCTURE:
 #billboard {
   background-image: 
     linear-gradient(to bottom, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 1) 100%), 
-  url(/images/background.jpg);
+  url(images/background.jpg);
   background-size: cover;
   background-position: center;
 }
