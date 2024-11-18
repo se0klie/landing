@@ -18,26 +18,25 @@ let getData = async () => {
         const data = await response.json();
         if (data != null) {
             // Count the number of registered subscribers by date from the data object
-
+        
             let answers = new Map();
-
+        
             if (Object.keys(data).length > 0) {
                 for (let key in data) {
-                    // let { country, gridRadios } = data[key];
-                    let { monstro } = data[key];
-
+                    let { country, gridRadios } = data[key];
+        
                     // Use gridRadios as the key for the answers map
-                    let count = answers.get(monstro) || 0;
-                    answers.set(monstro, count + 1);
+                    let count = answers.get(gridRadios) || 0;
+                    answers.set(gridRadios, count + 1);
                 }
             }
-
+        
             if (answers.size > 0) {
                 // Assuming you have a tbody or some element to insert rows into
                 let tableBody = document.getElementById('answersTableBody'); // Ensure you have a tbody with this ID
-
+        
                 tableBody.innerHTML = '';  // Clear previous content
-
+        
                 let index = 1;
                 for (let [option, count] of answers) {
                     let rowTemplate = `
@@ -46,13 +45,13 @@ let getData = async () => {
                             <td>${option}</td>
                             <td>${count}</td>
                         </tr>`;
-
+        
                     tableBody.innerHTML += rowTemplate; // Append new rows to the table body
                     index++;
                 }
             }
         }
-
+        
 
     } catch (error) {
         // Muestra cualquier error que ocurra durante la petición
@@ -64,20 +63,20 @@ let getData = async () => {
 let ready = () => {
     console.log('DOM está listo')
 }
+
 let loaded = () => {
     let myform = document.getElementById('form');
+    document.addEventListener('submit', (eventSubmit) => {
+        eventSubmit.preventDefault();
 
-    // Escucha el evento 'submit' en el formulario específico
-    myform.addEventListener('submit', (eventSubmit) => {
-        eventSubmit.preventDefault(); // Evita la recarga de la página al enviar el formulario
 
-        let monsterElement = document.querySelector('input[name="monster"]'); // Asegúrate de que el campo de entrada tenga el nombre adecuado
-        let monsterText = monsterElement.value;
+        let emailElement = document.querySelector('.form-control-lg');
+        let emailText = emailElement.value;
 
-        // Validación: si el campo está vacío, muestra una animación
-        if (monsterText.length === 0) {
-            monsterElement.focus(); // Enfoca el campo de entrada
-            monsterElement.animate(
+        if (emailText.length === 0) {
+            emailElement.focus();
+
+            emailElement.animate(
                 [
                     { transform: "translateX(0)" },
                     { transform: "translateX(50px)" },
@@ -88,25 +87,20 @@ let loaded = () => {
                     duration: 400,
                     easing: "linear",
                 }
-            );
-            return; // Detiene el envío de datos si el campo está vacío
-        }
 
-        // Si pasa la validación, llama a sendData()
+            );
+            return;
+        }
         sendData();
     });
-
-    // Obtiene los datos, si es necesario
     getData();
 }
 
-// Asegúrate de que la función sendData reciba el evento correctamente y prevenga la recarga
-let sendData = () => {
-    const form = document.getElementById('form');
-    const formData = new FormData(form);  // Obtiene los datos del formulario
-    const data = Object.fromEntries(formData.entries()); // Convierte a objeto
-    console.log(data);
 
+let sendData = () => {
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    console.log(data);
     fetch(databaseURL, {
         method: 'POST',
         headers: {
@@ -118,17 +112,18 @@ let sendData = () => {
             if (!response.ok) {
                 throw new Error(`Error en la solicitud: ${response.statusText}`);
             }
-            return response.json();
+            return response.json(); // Procesa la respuesta como JSON
         })
         .then(result => {
-            alert('Agradeciendo tu preferencia, nos mantenemos actualizados y enfocados en atenderte como mereces');
-            form.reset();  // Resetea el formulario
-            getData();     // Actualiza los datos de la base
+            alert('Agradeciendo tu preferencia, nos mantenemos actualizados y enfocados en atenderte como mereces'); // Maneja la respuesta con un mensaje
+            form.reset()
+            getData();
         })
         .catch(error => {
-            alert('Hemos experimentado un error. ¡Vuelve pronto!');
+            alert('Hemos experimentado un error. ¡Vuelve pronto!'); // Maneja el error con un mensaje
         });
-}
 
+
+}
 window.addEventListener("DOMContentLoaded", ready);
-window.addEventListener("load", loaded);
+window.addEventListener("load", loaded)
