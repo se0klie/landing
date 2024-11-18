@@ -64,20 +64,20 @@ let getData = async () => {
 let ready = () => {
     console.log('DOM está listo')
 }
-
 let loaded = () => {
     let myform = document.getElementById('form');
-    document.addEventListener('submit', (eventSubmit) => {
-        eventSubmit.preventDefault();
 
+    // Escucha el evento 'submit' en el formulario específico
+    myform.addEventListener('submit', (eventSubmit) => {
+        eventSubmit.preventDefault(); // Evita la recarga de la página al enviar el formulario
 
-        let emailElement = document.querySelector('.form-control-lg');
-        let emailText = emailElement.value;
+        let monsterElement = document.querySelector('input[name="monster"]'); // Asegúrate de que el campo de entrada tenga el nombre adecuado
+        let monsterText = monsterElement.value;
 
-        if (emailText.length === 0) {
-            emailElement.focus();
-
-            emailElement.animate(
+        // Validación: si el campo está vacío, muestra una animación
+        if (monsterText.length === 0) {
+            monsterElement.focus(); // Enfoca el campo de entrada
+            monsterElement.animate(
                 [
                     { transform: "translateX(0)" },
                     { transform: "translateX(50px)" },
@@ -88,20 +88,25 @@ let loaded = () => {
                     duration: 400,
                     easing: "linear",
                 }
-
             );
-            return;
+            return; // Detiene el envío de datos si el campo está vacío
         }
+
+        // Si pasa la validación, llama a sendData()
         sendData();
     });
+
+    // Obtiene los datos, si es necesario
     getData();
 }
 
-
+// Asegúrate de que la función sendData reciba el evento correctamente y prevenga la recarga
 let sendData = () => {
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    const form = document.getElementById('form');
+    const formData = new FormData(form);  // Obtiene los datos del formulario
+    const data = Object.fromEntries(formData.entries()); // Convierte a objeto
     console.log(data);
+
     fetch(databaseURL, {
         method: 'POST',
         headers: {
@@ -113,18 +118,17 @@ let sendData = () => {
             if (!response.ok) {
                 throw new Error(`Error en la solicitud: ${response.statusText}`);
             }
-            return response.json(); // Procesa la respuesta como JSON
+            return response.json();
         })
         .then(result => {
-            alert('Agradeciendo tu preferencia, nos mantenemos actualizados y enfocados en atenderte como mereces'); // Maneja la respuesta con un mensaje
-            form.reset()
-            getData();
+            alert('Agradeciendo tu preferencia, nos mantenemos actualizados y enfocados en atenderte como mereces');
+            form.reset();  // Resetea el formulario
+            getData();     // Actualiza los datos de la base
         })
         .catch(error => {
-            alert('Hemos experimentado un error. ¡Vuelve pronto!'); // Maneja el error con un mensaje
+            alert('Hemos experimentado un error. ¡Vuelve pronto!');
         });
-
-
 }
+
 window.addEventListener("DOMContentLoaded", ready);
-window.addEventListener("load", loaded)
+window.addEventListener("load", loaded);
