@@ -23,11 +23,11 @@ let getData = async () => {
         
             if (Object.keys(data).length > 0) {
                 for (let key in data) {
-                    let { country, gridRadios } = data[key];
+                    let { character, country } = data[key];
         
                     // Use gridRadios as the key for the answers map
-                    let count = answers.get(gridRadios) || 0;
-                    answers.set(gridRadios, count + 1);
+                    let count = answers.get(character) || 0;
+                    answers.set(character, count + 1);
                 }
             }
         

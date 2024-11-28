@@ -49,6 +49,9 @@ CSS STRUCTURE:
   font-size: 3rem; 
   color: #504D56;       
 }
+.nav-item a{
+  color:white;
+}
 h1.titular{
   font-size: 80px;
   color: rgb(37, 77, 130);
